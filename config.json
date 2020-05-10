@@ -52,6 +52,7 @@
                 "name": "Name: ",
                 "age": "Age: ",
                 "registration": "Registration: ",
+                "phone" : "Phone #: ",
                 "moneywallet": "Wallet: ",
                 "moneybank": "Bank: ",
                 "health": "Health: ",
@@ -66,8 +67,11 @@
                 "weapons": "Weapons: ",
                 "items": "Items: "
             }
+            "server":{
+              "server": "Server : "
+            }
         },
-        "tag": "Bot coded by oMarkez",
+        "tag": "Bot coded by oMarkez | modified by khristos_666"",
         "error": "Could not find you in the database."
     }
 }

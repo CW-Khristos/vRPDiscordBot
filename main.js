@@ -31,16 +31,50 @@ types = {
     "identity" : "SELECT * FROM vrp_user_identities WHERE user_id = ",
     "moneys" : "SELECT * FROM vrp_user_moneys WHERE user_id = ",
     "userdata" : "SELECT * FROM vrp_user_data WHERE user_id =",
-    "biler" : "SELECT * FROM vrp_user_vehicles WHERE user_id =" 
+    "biler" : "SELECT * FROM vrp_user_vehicles WHERE user_id =",
+    "server" : "SELECT * FROM vrp_srv_data"
+}
+
+admins = {
+    "discordidhere" : "namehere"
+}
+
+function noAdmin(message, userid){
+    const returnData = {
+        color: 0x1207eb,
+        author: {
+            name: 'Server Statistik',
+            icon_url: 'https://cdn.discordapp.com/avatars/264759509820506112/bc7c1c3908c4f794d0eeb4f596bccba0.png'
+        },
+        description: '',
+        fields: [
+            {
+                name: "Access : ",
+                value: "NO ADMIN",
+            }
+        ],
+        timestamp: new Date(),
+        footer: {
+            text: config[lang].tag
+        },
+    };
+    message.reply({embed: returnData})
 }
 
 function getData(type, userid, cb){
     if(types[type]){
         var sql = types[type]
-        connection.query(sql + userid, function(err, result, fields){
+        if (type != "server"){
+            connection.query(sql + userid, function(err, result, fields){
             if(err) throw err;
             cb(result)
-        })
+          })
+        } else if (type == "server"){
+            connection.query(sql, function(err, result, fields){
+              if(err) throw err;
+              cb(result)
+            })
+        }
     }
 }
 
@@ -72,6 +106,10 @@ function returnData(message,id){
                                 {
                                     name: config[lang].result.stats.registration,
                                     value: identity[0].registration,
+                                },
+                                {
+                                    name: config[lang].result.stats.phone,
+                                    value: identity[0].phone,
                                 },
                                 {
                                     name: config[lang].result.stats.moneywallet,
@@ -183,20 +221,115 @@ function returnInventory(message, id){
     })
 }
 
+function returnServer(message, id){
+    connection.query("SELECT * FROM vrp_srv_data;", function(error, result, fields){
+        if(error){
+          const returnData = {
+              color: 0x1207eb,
+              author: {
+                  name: 'Server Statistik',
+                  icon_url: 'https://cdn.discordapp.com/avatars/264759509820506112/bc7c1c3908c4f794d0eeb4f596bccba0.png'
+              },
+              description: '',
+              fields: [
+                  {
+                      name: config[lang].result.server.server,
+                      value: "Offline"
+                  }
+              ],
+              timestamp: new Date(),
+              footer: {
+                  text: config[lang].tag
+              },
+          };
+          message.reply({embed: returnData})          
+          throw error;
+        }
+        if(result[0]){
+          const returnData = {
+              color: 0x1207eb,
+              author: {
+                  name: 'Server Statistik',
+                  icon_url: 'https://cdn.discordapp.com/avatars/264759509820506112/bc7c1c3908c4f794d0eeb4f596bccba0.png'
+              },
+              description: '',
+              fields: [
+                  {
+                      name: config[lang].result.server.server,
+                      value: "Online"
+                  }
+              ],
+              timestamp: new Date(),
+              footer: {
+                  text: config[lang].tag
+              },
+          };
+          message.reply({embed: returnData})
+        }
+    })
+}
+
+function writeConsole(message){
+    if(!message.mentions.users.first()){
+        try{
+            var userid = message.member.user.id
+        }
+        catch(e){
+        }
+    } else{
+        try{
+          var userid = message.mentions.users.first().id
+        }
+        catch(e){
+        }
+    }
+    if (admins[userid]){
+        console.log("Query From : ADMIN : " + admins[userid])
+    } else{
+        console.log("Query From : USER : " + message.member.user.username)
+    }
+    console.log("Message Text : " + message.content)
+}
+
+bot.on("ready", () => {
+  console.log('Bot is now Connected.')
+})
+
 bot.on("message", function(message){
-    if(message.content.startsWith(prefix + config[lang].commands.stats)){
-        if(!message.mentions.users.first()){
-            returnData(message, message.member.user.id)
-        } else {
-            returnData(message, message.mentions.users.first().id)
+    if(!message.mentions.users.first()){
+        try{
+            var userid = message.member.user.id
         }
-    } else if(message.content.startsWith(prefix + config[lang].commands.cars)){
-        if(!message.mentions.users.first()){
-            returnBiler(message, message.member.user.id)
-        } else {
-            returnBiler(message, message.mentions.users.first().id)
+        catch(e){
         }
-    } else if(message.content.startsWith(prefix + config[lang].commands.inventory)){
-        returnInventory(message, message.member.user.id)
+    } else{
+        try{
+          var userid = message.mentions.users.first().id
+        }
+        catch(e){
+        }
+    }
+    if (admins[userid]){
+        if(message.content.startsWith(prefix + config[lang].commands.stats)){
+            writeConsole(message)
+            returnData(message, userid)
+        } else if(message.content.startsWith(prefix + config[lang].commands.cars)){
+            writeConsole(message)
+            returnBiler(message, userid)
+        } else if(message.content.startsWith(prefix + config[lang].commands.inventory)){
+            writeConsole(message)
+            returnInventory(message, userid)
+        } else if(message.content.startsWith(prefix + config[lang].commands.server)){
+            writeConsole(message)
+            returnServer(message, userid)
+        }
+    } else{
+        if(message.content.startsWith(prefix + config[lang].commands.server)){
+            writeConsole(message)
+            returnServer(message, userid)
+        } else if(message.content.startsWith(prefix)){
+            writeConsole(message)
+            noAdmin(message, userid)
+        }
     }
 })
