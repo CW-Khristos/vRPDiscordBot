@@ -8,6 +8,7 @@
   5. npm install discord.js
   6. npm install mysql
   7. Edit config.json; you should change the following values under "info" :
+    ```
     "user", "password", and "db" for the "database" section
     "prefix" : "o" (if desired), "token" : "discordtokenhere" to your Discord Bot's Token, "lang" : "dan" ("dan" / "eng"; if desired)
     "info": {
@@ -21,6 +22,7 @@
         "token": "your-discord-bot-token-here",
         "lang": "your-desired-lang"
         },
+    ```
   8. Done, open a CMD, CD where you have the folder, type "node main.js" and press enter
   
 # Credits:
