@@ -3,7 +3,7 @@
 # Installation:
 1. Make a folder and call it whatever you want on your machine.
 2. Copy the files from this repository to the folder.
-3. Open a CMD and write "cd path-to-fodler", ie you should CD where you have put the folder. eg "cd C: \ vRPDiscordBot"
+3. Open a CMD and write "CD path-to-folder", ie you should CD where you have put the folder. eg "cd C:\vRPDiscordBot"
 4. If you do not already have npm & nodejs; https://nodejs.org/en/ , then install it.
 5. npm install discord.js
 6. npm install mysql
