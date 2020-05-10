@@ -20,9 +20,8 @@
         "prefix": "your-desired-prefix",
         "token": "your-discord-bot-token-here",
         "lang": "your-desired-lang"
-    },
-
+        },
   8. Done, open a CMD, CD where you have the folder, type "node main.js" and press enter
-
+  
 # Credits:
   oMarkez#6666 & Naelith#2639 & Khristos#8436
